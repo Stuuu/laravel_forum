@@ -28,7 +28,7 @@ class CreateThreadsTest extends TestCase
         $this->actingAs(factory('App\User')
         ->create());
 
-        $thread = factory('App\Thread')->make();
+        $thread = make('App\Thread');
 
         $this->post('/threads', $thread->toArray());
 
