@@ -37,12 +37,26 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
                         <li><a href="/threads">All Threads</a></li>
+                        
+                        
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Browse <span class="caret"></span></a>
+
+                            <ul class="dropdown-menu">
+                               <li><a href="/threads">All Threads</a></li>
+                            <li>
+                                @if(auth()->check())
+                                <a href="/threads?by=">My Threads</a>
+                                @endif
+                            </li>
+                            </ul>
+                        </li>
 
                         <li>
                             <a href="/threads/create">New Thread</a>
                         </li>
 
-                        <li class="dropdoqn">
+                        <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Channels <span class="caret"></span></a>
 
                             <ul class="dropdown-menu">
