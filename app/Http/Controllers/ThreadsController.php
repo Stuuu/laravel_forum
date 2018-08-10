@@ -30,6 +30,16 @@ class ThreadsController extends Controller
         } else {
             $threads = Thread::latest()->get();
         }
+
+        // if request('by'), we should filter by the given username
+        if ($username = request('by')) {
+            $user = \App\User::where('name', $username)->firstOrFail();
+            
+            $threads = $threads->where('user_id', $user->id);
+        }
+        $threads = $threads->all();
+        
+
         return view('threads.index', compact('threads'));
     }
 
