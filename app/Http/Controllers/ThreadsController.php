@@ -25,20 +25,7 @@ class ThreadsController extends Controller
      */
     public function index(Channel $channel)
     {
-        if ($channel->exists) {
-            $threads = $channel->threads()->latest()->get();
-        } else {
-            $threads = Thread::latest()->get();
-        }
-
-        // if request('by'), we should filter by the given username
-        if ($username = request('by')) {
-            $user = \App\User::where('name', $username)->firstOrFail();
-            
-            $threads = $threads->where('user_id', $user->id);
-        }
-        $threads = $threads->all();
-        
+        $threads = $this->getThreads($channel);
 
         return view('threads.index', compact('threads'));
     }
@@ -121,5 +108,28 @@ class ThreadsController extends Controller
     public function destroy(Thread $thread)
     {
         //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Thread  $thread
+     * @return $threads
+     */
+    public function getThreads(Channel $channel)
+    {
+        if ($channel->exists) {
+            $threads = $channel->threads()->latest()->get();
+        } else {
+            $threads = Thread::latest()->get();
+        }
+
+        // if request('by'), we should filter by the given username
+        if ($username = request('by')) {
+            $user = \App\User::where('name', $username)->firstOrFail();
+        
+            $threads = $threads->where('user_id', $user->id);
+        }
+        return $threads = $threads->all();
     }
 }
