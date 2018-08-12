@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Filters\ThreadFilters;
 use App\Thread;
 use Illuminate\Http\Request;
 
@@ -23,9 +24,21 @@ class ThreadsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel)
+    public function index(Channel $channel, ThreadFilters $filters)
     {
-        $threads = $this->getThreads($channel);
+        if ($channel->exists) {
+            $threads = $channel->threads()->latest();
+        } else {
+            $threads = Thread::latest();
+        }
+
+        // // if request('by'), we should filter by the given username
+        // if ($username = request('by')) {
+        //     $user = \App\User::where('name', $username)->firstOrFail();
+        
+        //     $threads = $threads->where('user_id', $user->id);
+        // }
+        $threads = $threads->filter($filters)->get();
 
         return view('threads.index', compact('threads'));
     }
@@ -108,28 +121,5 @@ class ThreadsController extends Controller
     public function destroy(Thread $thread)
     {
         //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Thread  $thread
-     * @return $threads
-     */
-    public function getThreads(Channel $channel)
-    {
-        if ($channel->exists) {
-            $threads = $channel->threads()->latest()->get();
-        } else {
-            $threads = Thread::latest()->get();
-        }
-
-        // if request('by'), we should filter by the given username
-        if ($username = request('by')) {
-            $user = \App\User::where('name', $username)->firstOrFail();
-        
-            $threads = $threads->where('user_id', $user->id);
-        }
-        return $threads = $threads->all();
     }
 }
