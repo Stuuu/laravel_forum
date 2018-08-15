@@ -26,13 +26,7 @@ class ThreadsController extends Controller
      */
     public function index(Channel $channel, ThreadFilters $filters)
     {
-        $threads = Thread::latest();
-
-        if ($channel->exists) {
-            $threads->where('channel_id', $channel->id);
-        }
-
-        $threads = $threads->filter($filters)->get();
+        $threads = $this->getThreads($channel, $filters);
 
         return view('threads.index', compact('threads'));
     }
@@ -105,6 +99,18 @@ class ThreadsController extends Controller
     {
         //
     }
+
+    public function getThreads($channel, $filters)
+    {
+        $threads = Thread::latest()->filter($filters);
+
+        if ($channel->exists) {
+            $threads->where('channel_id', $channel->id);
+        }
+
+        return $threads->get();
+    }
+
 
     /**
      * Remove the specified resource from storage.
