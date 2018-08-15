@@ -46,7 +46,7 @@
                                <li><a href="/threads">All Threads</a></li>
                             <li>
                                 @if(auth()->check())
-                                <a href="/threads?by=">My Threads</a>
+                            <a href="/threads?by={{ auth()->user()->name }}">My Threads</a>
                                 @endif
                             </li>
                             </ul>
