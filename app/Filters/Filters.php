@@ -24,14 +24,13 @@ abstract class Filters
     public function apply($builder)
     {
         $this->builder = $builder;
-
-        $this->getFilters()
-            ->filter(function ($filter) {
-                return method_exists($this, $filter);
-            })
-            ->each(function ($filter, $value) {
+        
+        
+        foreach ($this->getFilters() as $filter => $value) {
+            if (method_exists($this, $filter)) {
                 $this->$filter($value);
-            });
+            }
+        }
         
         return $this->builder;
     }
@@ -39,6 +38,6 @@ abstract class Filters
 
     public function getFilters()
     {
-        return collect($this->request->intersect($this->filters))->flip();
+        return $this->request->intersect($this->filters);
     }
 }
