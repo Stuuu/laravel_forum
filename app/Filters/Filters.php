@@ -24,19 +24,21 @@ abstract class Filters
     public function apply($builder)
     {
         $this->builder = $builder;
-        
-        foreach ($this->filters as $filter) {
-            if (! $this->hasFilter($filter)) {
-                return;
-            }
-            $this->$filter($this->request->$filter);
-        }
+
+        $this->getFilters()
+            ->filter(function ($filter) {
+                return method_exists($this, $filter);
+            })
+            ->each(function ($filter, $value) {
+                $this->$filter($value);
+            });
         
         return $this->builder;
     }
 
-    public function hasFilter($filter)
+
+    public function getFilters()
     {
-        return method_exists($this, $filter) && $this->request->has($filter);
+        return collect($this->request->intersect($this->filters))->flip();
     }
 }
