@@ -6,6 +6,17 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class FavoritesTest extends TestCase
 {
     use DatabaseMigrations;
+
+    /** @test */
+
+    public function guest_can_not_favorite_anything()
+    {
+        $this->withExceptionHandling()
+            ->post('replies/1/favorites')
+            ->assertRedirect('/login');
+    }
+
+
     /** @test */
     public function an_authenticated_user_can_favorite_any_reply()
     {
