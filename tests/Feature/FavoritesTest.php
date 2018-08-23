@@ -20,14 +20,29 @@ class FavoritesTest extends TestCase
     /** @test */
     public function an_authenticated_user_can_favorite_any_reply()
     {
-        // replies/id/favorites
         $this->signIn();
 
         $reply = create('App\Reply');
 
-        //If I post to a "favorite" endpoint
         $this->post('replies/' . $reply->id . "/favorites");
 
+        $this->assertCount(1, $reply->favorites);
+    }
+
+    /** @test */
+    public function an_authenticated_user_can_only_favorite_a_reply_once()
+    {
+        $this->signIn();
+
+        $reply = create('App\Reply');
+ 
+        try {
+            $this->post('replies/' . $reply->id . "/favorites");
+            $this->post('replies/' . $reply->id . "/favorites");
+        } catch (\Exception $e) {
+            $this->fail('Did not expect to set the same record twice.');
+        }
+ 
         $this->assertCount(1, $reply->favorites);
     }
 }
